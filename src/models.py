@@ -21,7 +21,7 @@ class Follower(Base):
     id = Column(Integer, primary_key=True)
     user_from_id = Column(Integer, ForeignKey('user.id'))
     user_to_id = Column(Integer, ForeignKey('user.id'))
-    follow = relationship(User)
+    user = relationship(User)
 
 class Post(Base):
     __tablename__ = 'post'
@@ -34,7 +34,7 @@ class Comment(Base):
     id = Column(Integer, primary_key=True)
     comment_text = Column(String())
     author_id = Column(Integer, ForeignKey('user.id'))
-    author = relationship(User)
+    user = relationship(User)
     post_id = Column(Integer, ForeignKey('post.id'))
     post = relationship(Post)
 
