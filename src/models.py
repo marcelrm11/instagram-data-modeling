@@ -2,7 +2,7 @@ import os
 import sys
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy import create_engine
 from eralchemy2 import render_er
 
@@ -15,28 +15,29 @@ class User(Base):
     first_name = Column(String(60))
     last_name = Column(String(60))
     email = Column(String(240), nullable=False)
+    follows = relationship('Follows', backref='user')
+    posts = relationship('Post', backref='user')
+    comments = relationship('Comment', backref='user')
 
-class Follower(Base):
-    __tablename__ = 'follower'
+class Follows(Base):
+    __tablename__ = 'follows'
     id = Column(Integer, primary_key=True)
     user_from_id = Column(Integer, ForeignKey('user.id'))
     user_to_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
 
 class Post(Base):
     __tablename__ = 'post'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
+    comments = relationship('Comment', backref='post')
+    medias = relationship('Media', backref='post')
 
 class Comment(Base):
     __tablename__ = 'comment'
     id = Column(Integer, primary_key=True)
     comment_text = Column(String())
     author_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
     post_id = Column(Integer, ForeignKey('post.id'))
-    post = relationship(Post)
 
 class Media(Base):
     __tablename__ = 'media'
@@ -44,7 +45,6 @@ class Media(Base):
     media_type = Column(String(30))
     url = Column(String(240))
     post_id = Column(Integer, ForeignKey('post.id'))
-    post = relationship(Post)
 
 ## Draw from SQLAlchemy base
 try:
