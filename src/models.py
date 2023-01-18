@@ -9,42 +9,42 @@ from eralchemy2 import render_er
 Base = declarative_base()
 
 class User(Base):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     username = Column(String(30))
     first_name = Column(String(60))
     last_name = Column(String(60))
     email = Column(String(240), nullable=False)
-    follows = relationship('Follows', backref='user')
+    follows = relationship('Follow', backref='user')
     posts = relationship('Post', backref='user')
     comments = relationship('Comment', backref='user')
 
-class Follows(Base):
+class Follow(Base):
     __tablename__ = 'follows'
     id = Column(Integer, primary_key=True)
-    user_from_id = Column(Integer, ForeignKey('user.id'))
-    user_to_id = Column(Integer, ForeignKey('user.id'))
+    user_from_id = Column(Integer, ForeignKey('users.id'))
+    user_to_id = Column(Integer, ForeignKey('users.id'))
 
 class Post(Base):
-    __tablename__ = 'post'
+    __tablename__ = 'posts'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     comments = relationship('Comment', backref='post')
     medias = relationship('Media', backref='post')
 
 class Comment(Base):
-    __tablename__ = 'comment'
+    __tablename__ = 'comments'
     id = Column(Integer, primary_key=True)
     comment_text = Column(String())
-    author_id = Column(Integer, ForeignKey('user.id'))
-    post_id = Column(Integer, ForeignKey('post.id'))
+    author_id = Column(Integer, ForeignKey('users.id'))
+    post_id = Column(Integer, ForeignKey('posts.id'))
 
 class Media(Base):
-    __tablename__ = 'media'
+    __tablename__ = 'medias'
     id = Column(Integer, primary_key=True)
     media_type = Column(String(30))
     url = Column(String(240))
-    post_id = Column(Integer, ForeignKey('post.id'))
+    post_id = Column(Integer, ForeignKey('posts.id'))
 
 ## Draw from SQLAlchemy base
 try:
